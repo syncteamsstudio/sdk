@@ -1,73 +1,68 @@
 # SyncTeams Workflow SDK
 
-Typed Node.js and TypeScript client for the SyncTeams Workflow API. The SDK wraps the `/api/v1` endpoints, handles authentication, retries, polling, and exposes strongly-typed helpers for common approval flows.
+A TypeScript/Node.js client for the SyncTeams Workflow API. This SDK provides a simple interface for executing workflows, monitoring task status, and handling approval flows with full type safety.
 
 ---
 
 ## Installation
 
 ```bash
-# pnpm
-pnpm add @syncteamsstudio/sdk
-
-# npm
 npm install @syncteamsstudio/sdk
-
-# yarn
-yarn add @syncteamsstudio/sdk
 ```
 
-> **Requirements:** Node.js 18 or newer (built-in `fetch` support) or a custom fetch implementation.
+**Requirements:** Node.js 18 or newer
 
 ---
 
-## Quick start
+## Quick Start
 
 ```ts
 import { WorkflowClient } from '@syncteamsstudio/sdk';
 
 const client = new WorkflowClient({
   apiKey: process.env.SYNCTEAMS_API_KEY!,
-  // baseUrl is optional, defaults to https://develop.api.syncteams.studio
 });
 
 async function run() {
+  // Execute a workflow
   const { taskId } = await client.executeWorkflow({
-    workflowId: 'crew_onboarding',
+    workflowId: 'your_workflow_id',
     input: { email: 'user@example.com' },
     uniqueId: 'customer-123',
   });
 
+  // Wait for completion
   const result = await client.waitForCompletion(taskId, {
     pollIntervalMs: 2_000,
-    onUpdate: ({ status }) => console.log(`[${taskId}] → ${status}`),
+    onUpdate: ({ status }) => console.log(`Status: ${status}`),
   });
 
   if (result.status === 'COMPLETED') {
-    console.log('Workflow finished successfully', result.eventLogs);
-  } else {
-    console.warn('Workflow ended before completion', result);
+    console.log('Workflow completed successfully!');
   }
 }
 
-run().catch((error) => {
-  console.error('SyncTeams error', error);
-});
+run().catch(console.error);
 ```
 
 ---
 
-## `WorkflowClient` configuration
+## Configuration
 
 | Option | Required | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | ✅ | – | API key that starts with `sts_`. |
-| `baseUrl` | ❌ | `https://develop.api.syncteams.studio` | SyncTeams API origin. Override for production or other environments. |
-| `fetch` | ❌ | `globalThis.fetch` | Custom fetch implementation for Node < 18 or custom transports. |
-| `timeoutMs` | ❌ | `30_000` | Per-request timeout in milliseconds. |
-| `defaultHeaders` | ❌ | `{ Accept: 'application/json' }` | Additional headers appended to every request. |
-| `retry` | ❌ | `{ maxAttempts: 3, initialDelayMs: 1_000, backoffFactor: 2, maxDelayMs: 30_000, retryOnStatuses: [408, 425, 429, 5xx] }` | Retry policy for transient failures. |
-| `userAgentSuffix` | ❌ | – | Value appended to the default `syncteams-sdk/0.1.0` user agent. |
+| `apiKey` | ✅ | – | Your SyncTeams API key |
+| `baseUrl` | ❌ | `https://api.syncteams.studio` | API base URL |
+| `timeoutMs` | ❌ | `30000` | Request timeout in milliseconds |
+| `retry` | ❌ | See below | Retry configuration for failed requests |
+
+### Retry Configuration
+
+By default, the SDK retries transient failures with exponential backoff:
+- Maximum attempts: 3
+- Initial delay: 1 second
+- Backoff factor: 2x
+- Retries on: Network errors, timeouts, and 5xx responses
 
 ---
 
@@ -75,17 +70,17 @@ run().catch((error) => {
 
 ### `executeWorkflow(input)`
 
-Initiates a workflow run.
+Starts a workflow execution.
 
 ```ts
 const { taskId, status } = await client.executeWorkflow({
-  workflowId: 'crew_kickoff',
-  uniqueId: 'business-record-42',
-  input: { payload: '...' },
+  workflowId: 'your_workflow_id',
+  uniqueId: 'unique-identifier',
+  input: { /* your workflow input */ },
 });
 ```
 
-Returns the assigned `taskId` and the initial status (`QUEUED` or `PENDING`).
+Returns the `taskId` and initial status.
 
 ### `getTaskStatus(taskId)`
 
@@ -117,36 +112,37 @@ When `decision` is `'REJECT'`, `message` is required.
 
 ### `waitForCompletion(taskId, options?)`
 
-Polls until the task reaches a terminal status (default: `COMPLETED`, `FAILED`, `CANCELED`). Emits `onUpdate` callbacks whenever the status changes.
+Polls a task until it reaches a terminal status (`COMPLETED`, `FAILED`, or `CANCELED`).
 
 ```ts
 const finalStatus = await client.waitForCompletion(taskId, {
-  pollIntervalMs: 1_000,
-  maxWaitTimeMs: 15 * 60_000,
+  pollIntervalMs: 1000,
+  maxWaitTimeMs: 15 * 60 * 1000,
   onUpdate: ({ status, eventLogs }) => {
-    console.log('Status changed:', status);
-    if (eventLogs?.length) {
-      console.log('Latest event:', eventLogs.at(-1));
-    }
+    console.log('Status:', status);
   },
 });
 ```
 
-Use `exitOnWaiting: true` to return control immediately when a workflow enters `WAITING` (approval required).
+Options:
+- `pollIntervalMs`: Polling frequency (default: 2000ms)
+- `maxWaitTimeMs`: Maximum wait time before timeout
+- `onUpdate`: Callback fired on status changes
+- `exitOnWaiting`: Return early when task enters approval state
 
 ### `executeAndWait(input, options?)`
 
-Fire-and-forget helper that starts a workflow and waits for completion. Provide `onWaiting` to handle approval flows programmatically.
+Convenience method that executes a workflow and waits for completion.
 
 ```ts
 const result = await client.executeAndWait(
-  { workflowId: 'approval_flow', input: { amount: 500 } },
+  { workflowId: 'your_workflow_id', input: { amount: 500 } },
   {
-    pollIntervalMs: 1_000,
+    pollIntervalMs: 1000,
     onWaiting: async ({ taskId }) => {
-      await reviewRequest(taskId);
+      // Handle approval workflow
       await client.continueTask({ taskId, decision: 'APPROVE' });
-      return true; // resume polling
+      return true;
     },
   },
 );
@@ -154,92 +150,69 @@ const result = await client.executeAndWait(
 
 ---
 
-## Error handling
+## Error Handling
 
-The SDK throws `WorkflowAPIError` for unsuccessful HTTP responses or unrecoverable failures. The error exposes the status code, parsed response body, request metadata, and original cause.
+The SDK throws `WorkflowAPIError` for API failures, providing access to status codes and response details.
 
 ```ts
-import { WorkflowAPIError } from '@syncteams/sdk';
+import { WorkflowAPIError } from '@syncteamsstudio/sdk';
 
 try {
   await client.executeWorkflow({ workflowId: 'invalid', input: {} });
 } catch (error) {
   if (error instanceof WorkflowAPIError) {
-    console.error('SyncTeams request failed:', error.status, error.data);
+    console.error('API Error:', error.status, error.data);
   } else {
-    console.error('Unexpected error', error);
+    console.error('Unexpected error:', error);
   }
 }
 ```
 
-Retry-eligible errors (HTTP 408, 425, 429, 5xx, or network issues) are retried automatically according to the configured policy.
+Transient errors (timeouts, rate limits, server errors) are automatically retried.
 
 ---
 
-## Handling webhook callbacks
+## Webhooks
 
-If you configure webhook delivery in the SyncTeams console, your service receives payloads shaped like `WebhookEventPayload`:
+You can receive workflow updates via webhooks instead of polling:
 
 ```ts
-import type { WebhookEventPayload } from '@syncteams/sdk';
+import type { WebhookEventPayload } from '@syncteamsstudio/sdk';
 
-app.post('/syncteams/webhook', async (req, res) => {
+app.post('/webhooks/syncteams', async (req, res) => {
   const payload = req.body as WebhookEventPayload;
-
-  console.log('Task', payload.taskId, 'status', payload.status);
-  const latest = payload.eventLogs?.at(-1);
-
-  // TODO: verify signature once exposed, then process the event
-
+  
+  console.log('Task', payload.taskId, 'status:', payload.status);
+  
+  // Process the event
+  
   res.sendStatus(200);
 });
 ```
 
-Currently the public API relies on polling for most scenarios. Webhooks provide a push alternative when enabled and include the correlated `uniqueId` plus the most recent event log emitted by the backend.
-
 ---
 
-## TypeScript support
+## TypeScript Support
 
-The package ships with comprehensive type definitions:
-
-- `WorkflowStatus`, `ApprovalDecision`, and `WorkflowEventType` enums
-- Response models for every method
-- Configuration interfaces for retry and polling helpers
-
-You can import the types directly:
+The SDK is written in TypeScript and includes full type definitions:
 
 ```ts
-import type { WorkflowStatus, TaskStatusResponse } from '@syncteams/sdk';
+import type { 
+  WorkflowStatus, 
+  ApprovalDecision, 
+  TaskStatusResponse 
+} from '@syncteamsstudio/sdk';
 ```
 
 ---
 
-## Local development
+## Support
 
-```bash
-pnpm install
-pnpm run build         # compile to dist/
-pnpm run test          # execute vitest suite
-pnpm run typecheck     # tsc --noEmit against src/
-```
-
-The repository root defines a pnpm workspace, so commands such as `pnpm --filter @syncteams/sdk test` run from the monorepo.
+- Documentation: [https://develop.syncteams.studio](https://develop.syncteams.studio)
+- Email: support@syncteams.studio
 
 ---
 
-## Releasing
+## License
 
-1. Update the version in `package.json` and `CHANGELOG.md`.
-2. Run `pnpm --filter @syncteams/sdk test` and `pnpm --filter @syncteams/sdk build`.
-3. Commit the generated `dist/` artifacts.
-4. Publish with `pnpm --filter @syncteams/sdk publish --access public`.
-5. Create a matching git tag (e.g., `v0.1.0`).
-
----
-
-## Resources
-
-- [Full API reference](./development-readme.md) – deep dive into endpoints, payloads, and lifecycle details.
-- Support: support@syncteams.com
-- Issues: GitHub issues tracker listed above
+MIT
