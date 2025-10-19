@@ -1,0 +1,60 @@
+{
+  "name": "@syncteamsstudio/sdk",
+  "version": "0.1.1",
+  "description": "Official SyncTeams workflow SDK for Node.js and TypeScript consumers.",
+  "keywords": [
+    "syncteams",
+    "workflow",
+    "sdk",
+    "automation",
+    "api-client"
+  ],
+  "homepage": "https://github.com/syncteamsstudio/sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syncteamsstudio/sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/syncteamsstudio/sdk/issues"
+  },
+  "license": "MIT",
+  "author": "SyncTeams <support@syncteams.com>",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "clean": "rm -rf dist",
+    "lint": "pnpm run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepare": "tsup"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.5"
+  }
+}
