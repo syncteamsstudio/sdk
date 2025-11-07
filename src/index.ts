@@ -17,3 +17,19 @@ export {
   DEFAULT_REQUEST_TIMEOUT_MS,
   DEFAULT_MAX_WAIT_TIME_MS,
 } from './types';
+
+export type {
+  ExecutionEvent,
+  Agent,
+  Task,
+  Tool,
+  TaskOutput,
+  CrewConfig,
+  LlmConfig,
+  EmbedderConfig,
+  AgentExecutorConfig,
+  CrewUsageMetrics,
+  TaskContextItem,
+  ToolResult,
+  LlmCall,
+} from './event-types';

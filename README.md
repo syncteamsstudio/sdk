@@ -208,7 +208,7 @@ import type {
 
 ## Support
 
-- Documentation: [https://develop.syncteams.studio](https://develop.syncteams.studio)
+- Documentation: [https://www.syncteams.studio](https://www.syncteams.studio)
 - Email: support@syncteams.studio
 
 ---

@@ -1,3 +1,5 @@
+import type { ExecutionEvent } from './event-types';
+
 export type WorkflowStatus =
   | 'QUEUED'
   | 'PENDING'
@@ -62,7 +64,7 @@ export type WorkflowEventType =
 
 export interface TaskEventLog {
   eventType: WorkflowEventType;
-  eventData: any;
+  eventData: ExecutionEvent;
   createdAt: string | Date;
   updatedAt?: string | Date;
 }
@@ -121,7 +123,7 @@ export interface WorkflowClientRetryConfig {
 
 export interface WorkflowClientOptions {
   /**
-   * Base URL of the SyncTeams API. Defaults to https://develop.api.syncteams.studio
+   * Base URL of the SyncTeams API. Defaults to https://api.syncteams.studio
    */
   baseUrl?: string;
   /**
@@ -179,4 +181,4 @@ export interface ExecuteAndWaitOptions extends WaitForCompletionOptions {
 export const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 export const DEFAULT_POLL_INTERVAL_MS = 2_000;
 export const DEFAULT_MAX_WAIT_TIME_MS = 10 * 60 * 1000; // 10 minutes
-export const DEFAULT_BASE_URL = 'https://develop.api.syncteams.studio';
+export const DEFAULT_BASE_URL = 'https://api.syncteams.studio';
