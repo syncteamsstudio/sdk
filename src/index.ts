@@ -1,7 +1,9 @@
 export { WorkflowClient } from './client';
 export { WorkflowAPIError, isWorkflowAPIError } from './errors';
 export {
-  type ApprovalDecision,
+  ApprovalDecision,
+  WorkflowStatus,
+  WorkflowEventType,
   type ExecuteAndWaitOptions,
   type ExecuteWorkflowInput,
   type ExecuteWorkflowResponse,
@@ -10,8 +12,6 @@ export {
   type WebhookEventPayload,
   type WaitForCompletionOptions,
   type WorkflowClientOptions,
-  type WorkflowStatus,
-  type WorkflowEventType,
   DEFAULT_BASE_URL,
   DEFAULT_POLL_INTERVAL_MS,
   DEFAULT_REQUEST_TIMEOUT_MS,

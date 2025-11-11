@@ -17,7 +17,7 @@ npm install @syncteamsstudio/sdk
 ## Quick Start
 
 ```ts
-import { WorkflowClient } from '@syncteamsstudio/sdk';
+import { WorkflowClient, WorkflowStatus } from '@syncteamsstudio/sdk';
 
 const client = new WorkflowClient({
   apiKey: process.env.SYNCTEAMS_API_KEY!,
@@ -37,7 +37,7 @@ async function run() {
     onUpdate: ({ status }) => console.log(`Status: ${status}`),
   });
 
-  if (result.status === 'COMPLETED') {
+  if (result.status === WorkflowStatus.COMPLETED) {
     console.log('Workflow completed successfully!');
   }
 }
@@ -96,19 +96,21 @@ console.log(status.status, status.eventLogs?.length ?? 0);
 Resumes a waiting workflow after an approval decision.
 
 ```ts
+import { ApprovalDecision } from '@syncteamsstudio/sdk';
+
 await client.continueTask({
   taskId,
-  decision: 'APPROVE',
+  decision: ApprovalDecision.APPROVE,
 });
 
 await client.continueTask({
   taskId,
-  decision: 'REJECT',
+  decision: ApprovalDecision.REJECT,
   message: 'Missing documentation',
 });
 ```
 
-When `decision` is `'REJECT'`, `message` is required.
+When `decision` is `ApprovalDecision.REJECT`, `message` is required.
 
 ### `waitForCompletion(taskId, options?)`
 
@@ -135,13 +137,15 @@ Options:
 Convenience method that executes a workflow and waits for completion.
 
 ```ts
+import { ApprovalDecision } from '@syncteamsstudio/sdk';
+
 const result = await client.executeAndWait(
   { workflowId: 'your_workflow_id', input: { amount: 500 } },
   {
     pollIntervalMs: 1000,
     onWaiting: async ({ taskId }) => {
       // Handle approval workflow
-      await client.continueTask({ taskId, decision: 'APPROVE' });
+      await client.continueTask({ taskId, decision: ApprovalDecision.APPROVE });
       return true;
     },
   },
@@ -194,21 +198,40 @@ app.post('/webhooks/syncteams', async (req, res) => {
 
 ## TypeScript Support
 
-The SDK is written in TypeScript and includes full type definitions:
+The SDK is written in TypeScript and includes full type definitions and enums:
 
 ```ts
-import type { 
+import { 
   WorkflowStatus, 
-  ApprovalDecision, 
-  TaskStatusResponse 
+  ApprovalDecision,
+  WorkflowEventType,
+  type TaskStatusResponse 
 } from '@syncteamsstudio/sdk';
+
+// Use enums for type safety
+if (status === WorkflowStatus.COMPLETED) {
+  // Handle completion
+}
+
+// All available workflow statuses
+WorkflowStatus.QUEUED
+WorkflowStatus.PENDING
+WorkflowStatus.RUNNING
+WorkflowStatus.WAITING
+WorkflowStatus.CANCELED
+WorkflowStatus.FAILED
+WorkflowStatus.COMPLETED
+
+// Approval decisions
+ApprovalDecision.APPROVE
+ApprovalDecision.REJECT
 ```
 
 ---
 
 ## Support
 
-- Documentation: [https://www.syncteams.studio](https://www.syncteams.studio)
+- Documentation: [https://www.syncteams.studio/docs](https://www.syncteams.studio/docs)
 - Email: support@syncteams.studio
 
 ---

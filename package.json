@@ -1,6 +1,6 @@
 {
   "name": "@syncteamsstudio/sdk",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Official SyncTeams workflow SDK for Node.js and TypeScript consumers.",
   "keywords": [
     "syncteams",

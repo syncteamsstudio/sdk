@@ -1,69 +1,73 @@
 import type { ExecutionEvent } from './event-types';
 
-export type WorkflowStatus =
-  | 'QUEUED'
-  | 'PENDING'
-  | 'RUNNING'
-  | 'WAITING'
-  | 'CANCELED'
-  | 'FAILED'
-  | 'COMPLETED';
+export enum WorkflowStatus {
+  QUEUED = 'QUEUED',
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  WAITING = 'WAITING',
+  CANCELED = 'CANCELED',
+  FAILED = 'FAILED',
+  COMPLETED = 'COMPLETED',
+}
 
-export type ApprovalDecision = 'APPROVE' | 'REJECT';
+export enum ApprovalDecision {
+  APPROVE = 'APPROVE',
+  REJECT = 'REJECT',
+}
 
-export type WorkflowEventType =
-  | 'UserInputEvent'
-  | 'ConnectorInputEvent'
-  | 'TaskApprovalRequestEvent'
-  | 'TaskApprovalResponseEvent'
-  | 'CrewKickoffStartedEvent'
-  | 'CrewKickoffCompletedEvent'
-  | 'CrewKickoffFailedEvent'
-  | 'CrewTestStartedEvent'
-  | 'CrewTestCompletedEvent'
-  | 'CrewTestFailedEvent'
-  | 'CrewTrainStartedEvent'
-  | 'CrewTrainCompletedEvent'
-  | 'CrewTestResultEvent'
-  | 'CrewTrainFailedEvent'
-  | 'AgentExecutionStartedEvent'
-  | 'AgentExecutionCompletedEvent'
-  | 'AgentExecutionErrorEvent'
-  | 'AgentReasoningStartedEvent'
-  | 'AgentReasoningCompletedEvent'
-  | 'AgentReasoningFailedEvent'
-  | 'TaskStartedEvent'
-  | 'TaskCompletedEvent'
-  | 'TaskFailedEvent'
-  | 'TaskEvaluationEvent'
-  | 'TaskOutput'
-  | 'ToolUsageStartedEvent'
-  | 'ToolUsageFinishedEvent'
-  | 'ToolUsageErrorEvent'
-  | 'ToolValidateInputErrorEvent'
-  | 'ToolExecutionErrorEvent'
-  | 'ToolSelectionErrorEvent'
-  | 'KnowledgeRetrievalStartedEvent'
-  | 'KnowledgeRetrievalCompletedEvent'
-  | 'KnowledgeQueryStartedEvent'
-  | 'KnowledgeQueryCompletedEvent'
-  | 'KnowledgeQueryFailedEvent'
-  | 'KnowledgeSearchQueryFailedEvent'
-  | 'FlowCreatedEvent'
-  | 'FlowStartedEvent'
-  | 'FlowFinishedEvent'
-  | 'FlowPlotEvent'
-  | 'MethodExecutionStartedEvent'
-  | 'MethodExecutionFinishedEvent'
-  | 'MethodExecutionFailedEvent'
-  | 'LLMCallStartedEvent'
-  | 'LLMCallCompletedEvent'
-  | 'LLMCallFailedEvent'
-  | 'LLMStreamChunkEvent'
-  | (string & {});
+export enum WorkflowEventType {
+  UserInputEvent = 'UserInputEvent',
+  ConnectorInputEvent = 'ConnectorInputEvent',
+  TaskApprovalRequestEvent = 'TaskApprovalRequestEvent',
+  TaskApprovalResponseEvent = 'TaskApprovalResponseEvent',
+  CrewKickoffStartedEvent = 'CrewKickoffStartedEvent',
+  CrewKickoffCompletedEvent = 'CrewKickoffCompletedEvent',
+  CrewKickoffFailedEvent = 'CrewKickoffFailedEvent',
+  CrewTestStartedEvent = 'CrewTestStartedEvent',
+  CrewTestCompletedEvent = 'CrewTestCompletedEvent',
+  CrewTestFailedEvent = 'CrewTestFailedEvent',
+  CrewTrainStartedEvent = 'CrewTrainStartedEvent',
+  CrewTrainCompletedEvent = 'CrewTrainCompletedEvent',
+  CrewTestResultEvent = 'CrewTestResultEvent',
+  CrewTrainFailedEvent = 'CrewTrainFailedEvent',
+  AgentExecutionStartedEvent = 'AgentExecutionStartedEvent',
+  AgentExecutionCompletedEvent = 'AgentExecutionCompletedEvent',
+  AgentExecutionErrorEvent = 'AgentExecutionErrorEvent',
+  AgentReasoningStartedEvent = 'AgentReasoningStartedEvent',
+  AgentReasoningCompletedEvent = 'AgentReasoningCompletedEvent',
+  AgentReasoningFailedEvent = 'AgentReasoningFailedEvent',
+  TaskStartedEvent = 'TaskStartedEvent',
+  TaskCompletedEvent = 'TaskCompletedEvent',
+  TaskFailedEvent = 'TaskFailedEvent',
+  TaskEvaluationEvent = 'TaskEvaluationEvent',
+  TaskOutput = 'TaskOutput',
+  ToolUsageStartedEvent = 'ToolUsageStartedEvent',
+  ToolUsageFinishedEvent = 'ToolUsageFinishedEvent',
+  ToolUsageErrorEvent = 'ToolUsageErrorEvent',
+  ToolValidateInputErrorEvent = 'ToolValidateInputErrorEvent',
+  ToolExecutionErrorEvent = 'ToolExecutionErrorEvent',
+  ToolSelectionErrorEvent = 'ToolSelectionErrorEvent',
+  KnowledgeRetrievalStartedEvent = 'KnowledgeRetrievalStartedEvent',
+  KnowledgeRetrievalCompletedEvent = 'KnowledgeRetrievalCompletedEvent',
+  KnowledgeQueryStartedEvent = 'KnowledgeQueryStartedEvent',
+  KnowledgeQueryCompletedEvent = 'KnowledgeQueryCompletedEvent',
+  KnowledgeQueryFailedEvent = 'KnowledgeQueryFailedEvent',
+  KnowledgeSearchQueryFailedEvent = 'KnowledgeSearchQueryFailedEvent',
+  FlowCreatedEvent = 'FlowCreatedEvent',
+  FlowStartedEvent = 'FlowStartedEvent',
+  FlowFinishedEvent = 'FlowFinishedEvent',
+  FlowPlotEvent = 'FlowPlotEvent',
+  MethodExecutionStartedEvent = 'MethodExecutionStartedEvent',
+  MethodExecutionFinishedEvent = 'MethodExecutionFinishedEvent',
+  MethodExecutionFailedEvent = 'MethodExecutionFailedEvent',
+  LLMCallStartedEvent = 'LLMCallStartedEvent',
+  LLMCallCompletedEvent = 'LLMCallCompletedEvent',
+  LLMCallFailedEvent = 'LLMCallFailedEvent',
+  LLMStreamChunkEvent = 'LLMStreamChunkEvent',
+}
 
 export interface TaskEventLog {
-  eventType: WorkflowEventType;
+  eventType: WorkflowEventType | string;
   eventData: ExecutionEvent;
   createdAt: string | Date;
   updatedAt?: string | Date;

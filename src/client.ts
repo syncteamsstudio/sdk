@@ -14,7 +14,11 @@ import {
   WorkflowStatus,
 } from './types';
 
-const TERMINAL_STATUSES: WorkflowStatus[] = ['COMPLETED', 'FAILED', 'CANCELED'];
+const TERMINAL_STATUSES: WorkflowStatus[] = [
+  WorkflowStatus.COMPLETED,
+  WorkflowStatus.FAILED,
+  WorkflowStatus.CANCELED,
+];
 
 export class WorkflowClient {
   private readonly http: HttpClient;
@@ -77,7 +81,7 @@ export class WorkflowClient {
     const { taskId, decision, message } = params;
     assertString(taskId, 'taskId');
 
-    if (decision === 'REJECT' && !message) {
+    if (decision === ApprovalDecision.REJECT && !message) {
       throw new Error('message is required when decision is REJECT');
     }
 
@@ -128,7 +132,7 @@ export class WorkflowClient {
       }
 
       const isTerminal = terminalSet.has(status.status);
-      const isWaiting = status.status === 'WAITING';
+      const isWaiting = status.status === WorkflowStatus.WAITING;
 
       if (isTerminal || (isWaiting && exitOnWaiting)) {
         return status;
@@ -179,7 +183,7 @@ export class WorkflowClient {
         exitOnWaiting: true,
       });
 
-      if (current.status !== 'WAITING') {
+      if (current.status !== WorkflowStatus.WAITING) {
         return current;
       }
 
