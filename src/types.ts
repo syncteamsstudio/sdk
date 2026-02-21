@@ -16,54 +16,86 @@ export enum ApprovalDecision {
 }
 
 export enum WorkflowEventType {
+  // Non-Team Events
   UserInputEvent = 'UserInputEvent',
-  ConnectorInputEvent = 'ConnectorInputEvent',
   TaskApprovalRequestEvent = 'TaskApprovalRequestEvent',
   TaskApprovalResponseEvent = 'TaskApprovalResponseEvent',
-  CrewKickoffStartedEvent = 'CrewKickoffStartedEvent',
-  CrewKickoffCompletedEvent = 'CrewKickoffCompletedEvent',
-  CrewKickoffFailedEvent = 'CrewKickoffFailedEvent',
-  CrewTestStartedEvent = 'CrewTestStartedEvent',
-  CrewTestCompletedEvent = 'CrewTestCompletedEvent',
-  CrewTestFailedEvent = 'CrewTestFailedEvent',
-  CrewTrainStartedEvent = 'CrewTrainStartedEvent',
-  CrewTrainCompletedEvent = 'CrewTrainCompletedEvent',
-  CrewTestResultEvent = 'CrewTestResultEvent',
-  CrewTrainFailedEvent = 'CrewTrainFailedEvent',
+  ConnectorInputEvent = 'ConnectorInputEvent',
+
+  // Team Events
+  TeamKickoffStartedEvent = 'TeamKickoffStartedEvent',
+  TeamKickoffCompletedEvent = 'TeamKickoffCompletedEvent',
+  TeamKickoffFailedEvent = 'TeamKickoffFailedEvent',
+  TeamTestStartedEvent = 'TeamTestStartedEvent',
+  TeamTestCompletedEvent = 'TeamTestCompletedEvent',
+  TeamTestResultEvent = 'TeamTestResultEvent',
+  TeamTestFailedEvent = 'TeamTestFailedEvent',
+  TeamTrainStartedEvent = 'TeamTrainStartedEvent',
+  TeamTrainCompletedEvent = 'TeamTrainCompletedEvent',
+  TeamTrainFailedEvent = 'TeamTrainFailedEvent',
+
+  // Agent Events
   AgentExecutionStartedEvent = 'AgentExecutionStartedEvent',
   AgentExecutionCompletedEvent = 'AgentExecutionCompletedEvent',
   AgentExecutionErrorEvent = 'AgentExecutionErrorEvent',
+  AgentLogsExecutionEvent = 'AgentLogsExecutionEvent',
+  AgentLogsStartedEvent = 'AgentLogsStartedEvent',
   AgentReasoningStartedEvent = 'AgentReasoningStartedEvent',
   AgentReasoningCompletedEvent = 'AgentReasoningCompletedEvent',
   AgentReasoningFailedEvent = 'AgentReasoningFailedEvent',
+
+  // Lite Agent Events
+  LiteAgentExecutionStartedEvent = 'LiteAgentExecutionStartedEvent',
+  LiteAgentExecutionCompletedEvent = 'LiteAgentExecutionCompletedEvent',
+
+  // Task Events
   TaskStartedEvent = 'TaskStartedEvent',
   TaskCompletedEvent = 'TaskCompletedEvent',
   TaskFailedEvent = 'TaskFailedEvent',
   TaskEvaluationEvent = 'TaskEvaluationEvent',
-  TaskOutput = 'TaskOutput',
+
+  // Flow Events
+  FlowStartedEvent = 'FlowStartedEvent',
+  FlowFinishedEvent = 'FlowFinishedEvent',
+
+  // Method Events
+  MethodExecutionStartedEvent = 'MethodExecutionStartedEvent',
+  MethodExecutionFinishedEvent = 'MethodExecutionFinishedEvent',
+  MethodExecutionFailedEvent = 'MethodExecutionFailedEvent',
+
+  // Tool Events
   ToolUsageStartedEvent = 'ToolUsageStartedEvent',
   ToolUsageFinishedEvent = 'ToolUsageFinishedEvent',
   ToolUsageErrorEvent = 'ToolUsageErrorEvent',
   ToolValidateInputErrorEvent = 'ToolValidateInputErrorEvent',
   ToolExecutionErrorEvent = 'ToolExecutionErrorEvent',
   ToolSelectionErrorEvent = 'ToolSelectionErrorEvent',
+
+  // LLM Events
+  LLMCallStartedEvent = 'LLMCallStartedEvent',
+  LLMCallCompletedEvent = 'LLMCallCompletedEvent',
+  LLMCallFailedEvent = 'LLMCallFailedEvent',
+  LLMStreamChunkEvent = 'LLMStreamChunkEvent',
+  LLMGuardrailStartedEvent = 'LLMGuardrailStartedEvent',
+  LLMGuardrailCompletedEvent = 'LLMGuardrailCompletedEvent',
+
+  // Knowledge Events
   KnowledgeRetrievalStartedEvent = 'KnowledgeRetrievalStartedEvent',
   KnowledgeRetrievalCompletedEvent = 'KnowledgeRetrievalCompletedEvent',
   KnowledgeQueryStartedEvent = 'KnowledgeQueryStartedEvent',
   KnowledgeQueryCompletedEvent = 'KnowledgeQueryCompletedEvent',
   KnowledgeQueryFailedEvent = 'KnowledgeQueryFailedEvent',
   KnowledgeSearchQueryFailedEvent = 'KnowledgeSearchQueryFailedEvent',
-  FlowCreatedEvent = 'FlowCreatedEvent',
-  FlowStartedEvent = 'FlowStartedEvent',
-  FlowFinishedEvent = 'FlowFinishedEvent',
-  FlowPlotEvent = 'FlowPlotEvent',
-  MethodExecutionStartedEvent = 'MethodExecutionStartedEvent',
-  MethodExecutionFinishedEvent = 'MethodExecutionFinishedEvent',
-  MethodExecutionFailedEvent = 'MethodExecutionFailedEvent',
-  LLMCallStartedEvent = 'LLMCallStartedEvent',
-  LLMCallCompletedEvent = 'LLMCallCompletedEvent',
-  LLMCallFailedEvent = 'LLMCallFailedEvent',
-  LLMStreamChunkEvent = 'LLMStreamChunkEvent',
+
+  // Memory Events
+  MemorySaveStartedEvent = 'MemorySaveStartedEvent',
+  MemorySaveCompletedEvent = 'MemorySaveCompletedEvent',
+  MemorySaveFailedEvent = 'MemorySaveFailedEvent',
+  MemoryQueryStartedEvent = 'MemoryQueryStartedEvent',
+  MemoryQueryCompletedEvent = 'MemoryQueryCompletedEvent',
+  MemoryQueryFailedEvent = 'MemoryQueryFailedEvent',
+  MemoryRetrievalStartedEvent = 'MemoryRetrievalStartedEvent',
+  MemoryRetrievalCompletedEvent = 'MemoryRetrievalCompletedEvent',
 }
 
 export interface TaskEventLog {

@@ -24,7 +24,7 @@ export type {
   Task,
   Tool,
   TaskOutput,
-  CrewConfig,
+  TeamConfig,
   LlmConfig,
   EmbedderConfig,
   AgentExecutorConfig,

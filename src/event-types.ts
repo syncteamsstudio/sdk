@@ -74,6 +74,7 @@ export interface TaskOutput {
   raw?: string;
   agent?: string;
   output_format?: string;
+  pydantic?: Record<string, unknown>;
 }
 
 export interface Agent {
@@ -87,11 +88,16 @@ export interface Agent {
   max_iter?: number;
   agent_executor?: AgentExecutorConfig;
   llm?: LlmConfig;
-  crew?: CrewConfig;
+  team?: TeamConfig;
   tools_results?: ToolResult[];
   multimodal?: boolean;
   reasoning?: boolean;
   embedder?: EmbedderConfig;
+  respect_context_window?: boolean;
+  max_retry_limit?: number;
+  inject_date?: boolean;
+  date_format?: string;
+  guardrail_max_retries?: number;
 }
 
 export interface Task {
@@ -102,7 +108,7 @@ export interface Task {
   used_tools?: number;
   tools_errors?: number;
   delegations?: number;
-  context?: TaskContextItem[];
+  context?: TaskContextItem[] | Record<string, unknown>;
   output?: TaskOutput;
   agent?: Agent;
   async_execution?: boolean;
@@ -110,9 +116,15 @@ export interface Task {
   human_input?: boolean;
   max_retries?: number;
   retry_count?: number;
+  output_pydantic?: string;
+  guardrail_max_retries?: number;
+  guardrails?: unknown[];
+  processed_by_agents?: string[];
+  start_time?: string;
+  end_time?: string;
 }
 
-export interface CrewConfig {
+export interface TeamConfig {
   name?: string;
   tasks?: Task[];
   agents?: Agent[];
@@ -142,13 +154,23 @@ export interface ExecutionEvent {
   agent?: Agent;
   tools?: Tool[];
   task?: Task;
-  output?: TaskOutput;
+  output?: TaskOutput | string | unknown;
   context?: string;
-  crew_name?: string;
-  inputs?: { message?: string };
+  team_name?: string;
+  inputs?: string | Record<string, unknown>;
   task_name?: string;
   agent_role?: string;
   messages?: LlmCall[];
   error?: string;
-  training_mode?: boolean;
+  tool_name?: string;
+  tool_args?: string | Record<string, unknown>;
+  tool_class?: string;
+  agent_key?: string;
+  started_at?: string;
+  finished_at?: string;
+  from_cache?: boolean;
+  team?: TeamConfig;
+  quality?: number;
+  execution_duration?: number;
+  model?: string;
 }
