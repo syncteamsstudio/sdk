@@ -12,7 +12,7 @@ const DEFAULT_RETRYABLE_STATUSES = [
   429, // Too Many Requests
 ];
 
-const SDK_VERSION = '0.1.0';
+const SDK_VERSION = '0.4.0';
 
 interface NormalizedRequestInit extends Omit<RequestInit, 'body'> {
   body?: unknown;

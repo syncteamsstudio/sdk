@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-02-23
+
+### Changed
+- **Breaking:** Renamed all "Crew" event types to "Team" (e.g. `CrewKickoffStartedEvent` → `TeamKickoffStartedEvent`)
+- **Breaking:** Renamed `CrewConfig` type to `TeamConfig`
+- **Breaking:** Renamed `Agent.crew` field to `Agent.team`
+- **Breaking:** Renamed `ExecutionEvent.crew_name` field to `team_name`
+- Updated `ExecutionEvent.inputs` type from `{ message?: string }` to `string | Record<string, unknown>`
+- Updated `ExecutionEvent.output` type to `TaskOutput | string | unknown`
+
+### Added
+- New event types: `AgentLogsExecutionEvent`, `AgentLogsStartedEvent`, `LiteAgentExecutionStartedEvent`, `LiteAgentExecutionCompletedEvent`, `LLMGuardrailStartedEvent`, `LLMGuardrailCompletedEvent`
+- New Memory event types: `MemorySaveStartedEvent`, `MemorySaveCompletedEvent`, `MemorySaveFailedEvent`, `MemoryQueryStartedEvent`, `MemoryQueryCompletedEvent`, `MemoryQueryFailedEvent`, `MemoryRetrievalStartedEvent`, `MemoryRetrievalCompletedEvent`
+- New `ExecutionEvent` fields: `tool_name`, `tool_args`, `tool_class`, `agent_key`, `started_at`, `finished_at`, `from_cache`, `team`, `quality`, `execution_duration`, `model`
+- New `Agent` fields: `respect_context_window`, `max_retry_limit`, `inject_date`, `date_format`, `guardrail_max_retries`
+- New `Task` fields: `output_pydantic`, `guardrail_max_retries`, `guardrails`, `processed_by_agents`, `start_time`, `end_time`
+- New `TaskOutput` field: `pydantic`
+
+### Removed
+- Removed deprecated event types: `FlowCreatedEvent`, `FlowPlotEvent`, `TaskOutput`
+
 ## [0.3.0] - 2025-11-10
 
 ### Added
