@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-03-01
+
+### Added
+- Added Stripe-style webhook signature verification helper: `verifyWebhookSignature`
+- Added exported webhook header constants: `WEBHOOK_SIGNATURE_HEADER`, `WEBHOOK_TIMESTAMP_HEADER`, `WEBHOOK_EVENT_ID_HEADER`
+- Added exported webhook tolerance constant: `DEFAULT_WEBHOOK_TOLERANCE_SECONDS`
+- Added webhook signature verification tests
+- Added README usage docs for webhook signature verification
+
 ## [0.4.0] - 2026-02-23
 
 ### Changed

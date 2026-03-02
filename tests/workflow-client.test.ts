@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
+import { createHmac } from 'crypto';
 import { WorkflowClient } from '../src/client';
 import { DEFAULT_BASE_URL } from '../src/types';
-import type { WorkflowStatus } from '../src/types';
+import { ApprovalDecision, WorkflowStatus } from '../src/types';
+import { verifyWebhookSignature } from '../src/webhook-signature';
 
 const BASE_URL = 'https://api.example.com';
 
@@ -65,7 +67,11 @@ describe('WorkflowClient', () => {
   });
 
   it('polls until a terminal status is reached', async () => {
-    const statuses: WorkflowStatus[] = ['PENDING', 'RUNNING', 'COMPLETED'];
+    const statuses: WorkflowStatus[] = [
+      WorkflowStatus.PENDING,
+      WorkflowStatus.RUNNING,
+      WorkflowStatus.COMPLETED,
+    ];
     const updates: WorkflowStatus[] = [];
 
     const fetchMock = queueFetch(
@@ -147,8 +153,67 @@ describe('WorkflowClient', () => {
     });
 
     await expect(
-      client.continueTask({ taskId: 'task-1', decision: 'REJECT' }),
+      client.continueTask({
+        taskId: 'task-1',
+        decision: ApprovalDecision.REJECT,
+      }),
     ).rejects.toThrow(/message is required/i);
+  });
+});
+
+describe('verifyWebhookSignature', () => {
+  it('returns true for a valid signature', () => {
+    const secret = 'whsec_test_secret';
+    const payload = JSON.stringify({ taskId: 'task-1', status: 'COMPLETED' });
+    const timestamp = '1710000000';
+    const signature = createHmac('sha256', secret)
+      .update(`${timestamp}.${payload}`, 'utf8')
+      .digest('hex');
+
+    const isValid = verifyWebhookSignature({
+      payload,
+      signatureHeader: `t=${timestamp},v1=${signature}`,
+      signingSecret: secret,
+      currentTimestamp: 1710000005,
+    });
+
+    expect(isValid).toBe(true);
+  });
+
+  it('returns false for stale signatures', () => {
+    const secret = 'whsec_test_secret';
+    const payload = JSON.stringify({ taskId: 'task-2', status: 'FAILED' });
+    const timestamp = '1710000000';
+    const signature = createHmac('sha256', secret)
+      .update(`${timestamp}.${payload}`, 'utf8')
+      .digest('hex');
+
+    const isValid = verifyWebhookSignature({
+      payload,
+      signatureHeader: `t=${timestamp},v1=${signature}`,
+      signingSecret: secret,
+      currentTimestamp: 1710000900,
+      toleranceSeconds: 60,
+    });
+
+    expect(isValid).toBe(false);
+  });
+
+  it('returns false when the secret is wrong', () => {
+    const payload = JSON.stringify({ taskId: 'task-3', status: 'RUNNING' });
+    const timestamp = '1710000000';
+    const signature = createHmac('sha256', 'whsec_correct_secret')
+      .update(`${timestamp}.${payload}`, 'utf8')
+      .digest('hex');
+
+    const isValid = verifyWebhookSignature({
+      payload,
+      signatureHeader: `t=${timestamp},v1=${signature}`,
+      signingSecret: 'whsec_wrong_secret',
+      currentTimestamp: 1710000005,
+    });
+
+    expect(isValid).toBe(false);
   });
 });
 

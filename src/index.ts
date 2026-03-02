@@ -1,6 +1,14 @@
 export { WorkflowClient } from './client';
 export { WorkflowAPIError, isWorkflowAPIError } from './errors';
 export {
+  verifyWebhookSignature,
+  WEBHOOK_SIGNATURE_HEADER,
+  WEBHOOK_TIMESTAMP_HEADER,
+  WEBHOOK_EVENT_ID_HEADER,
+  DEFAULT_WEBHOOK_TOLERANCE_SECONDS,
+  type VerifyWebhookSignatureOptions,
+} from './webhook-signature';
+export {
   ApprovalDecision,
   WorkflowStatus,
   WorkflowEventType,

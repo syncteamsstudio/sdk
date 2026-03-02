@@ -194,6 +194,37 @@ app.post('/webhooks/syncteams', async (req, res) => {
 });
 ```
 
+Verify signatures with the built-in helper:
+
+```ts
+import {
+  verifyWebhookSignature,
+  WEBHOOK_SIGNATURE_HEADER,
+  WEBHOOK_TIMESTAMP_HEADER,
+} from '@syncteamsstudio/sdk';
+
+app.post('/webhooks/syncteams', async (req, res) => {
+  const rawBody = JSON.stringify(req.body);
+  const signatureHeader = req.header(WEBHOOK_SIGNATURE_HEADER) || '';
+  const timestampHeader = req.header(WEBHOOK_TIMESTAMP_HEADER) || '';
+
+  const isValid = verifyWebhookSignature({
+    payload: rawBody,
+    signatureHeader,
+    timestampHeader,
+    signingSecret: process.env.SYNCTEAMS_WEBHOOK_SECRET!,
+  });
+
+  if (!isValid) {
+    return res.sendStatus(400);
+  }
+
+  return res.sendStatus(200);
+});
+```
+
+Use the raw JSON request body for verification. If your framework parses/reformats the body before validation, the signature may fail.
+
 ---
 
 ## TypeScript Support
